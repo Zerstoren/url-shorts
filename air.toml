@@ -1,0 +1,12 @@
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+[build]
+  pre_cmd = ["TEMPL_EXPERIMENT=rawgo templ generate"]
+  cmd = "go build -o tmp/main cmd/http/http.go"
+  bin = "tmp/main"
+  full_bin = "DOMAIN=http://localhost:3031/ ./tmp/main"
+  delay = 1000 # ms
+  exclude_dir = ["public", "tmp", "vendor"]
+  include_ext = ["go", "templ"]
+  exclude_regex = ["_test\\.go", "_templ\\.go"]
