@@ -1,9 +1,10 @@
-package system
+package db
 
 import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
 type runConfig struct {
@@ -43,9 +44,9 @@ func GetDb() *gorm.DB {
 		db = runConfig{
 			dbHost:     "localhost",
 			dbPort:     "5432",
-			dbUser:     "postgres_wot",
-			dbPassword: "1234",
-			dbName:     "url-shorts",
+			dbUser:     os.Getenv("DB_USER"),
+			dbPassword: os.Getenv("DB_PASS"),
+			dbName:     os.Getenv("DB_NAME"),
 		}
 
 		db.run()
@@ -54,18 +55,38 @@ func GetDb() *gorm.DB {
 	return db.db
 }
 
-type DbRequest struct {
+type Iterable[T any] interface {
+	GetFirst() (*T, bool)
+}
+
+type IterableOrigin[T any] struct {
+	Origin *[]T
+}
+
+func (i *IterableOrigin[T]) GetFirst() (*T, bool) {
+	if i.Origin == nil {
+		return nil, false
+	}
+
+	if len(*i.Origin) == 0 {
+		return nil, false
+	}
+
+	return &(*i.Origin)[0], true
+}
+
+type Request struct {
 	Db *gorm.DB
 }
 
-func (c *DbRequest) ResetDb() {
+func (c *Request) ResetDb() {
 	c.Db = db.db
 }
 
-func (c *DbRequest) GetDb() *gorm.DB {
+func (c *Request) GetDb() *gorm.DB {
 	return c.Db
 }
 
-func (c *DbRequest) SetDb(db *gorm.DB) {
+func (c *Request) SetDb(db *gorm.DB) {
 	c.Db = db
 }

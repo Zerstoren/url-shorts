@@ -1,14 +1,13 @@
 package featureLink
 
 import (
-	"gorm.io/gorm"
-	"url-shorts.com/internal/system"
+	"url-shorts.com/internal/db"
 )
 
 type linkMethods interface {
-	getFirst() (Link, bool)
-	createLink(url string, short string) error
-	findLastItem() error
+	db.Iterable[LinkItem]
+	createLink(url string) error
+	getByCode(code string) error
 }
 
 type Link interface {
@@ -19,49 +18,43 @@ type Link interface {
 
 func newLinkRequest() linkMethods {
 	return &linkRequest{
-		Origin: nil,
-		DbRequest: system.DbRequest{
-			Db: system.GetDb(),
+		IterableOrigin: db.IterableOrigin[LinkItem]{
+			Origin: &[]LinkItem{},
+		},
+		Request: db.Request{
+			Db: db.GetDb(),
 		},
 	}
 }
 
 type linkRequest struct {
-	Origin *[]LinkItem
-	system.DbRequest
+	db.IterableOrigin[LinkItem]
+	db.Request
 }
 
-func (l *linkRequest) findLastItem() error {
-	return l.Db.Order("id DESC").Limit(1).Find(&l.Origin).Error
+func (l *linkRequest) getByCode(code string) error {
+	id := idFromCode(code)
+	return l.Db.First(l.Origin, id).Error
 }
 
-func (l *linkRequest) getFirst() (Link, bool) {
-	if l.Origin == nil {
-		return nil, false
-	}
-
-	if len(*l.Origin) == 0 {
-		return nil, false
-	}
-
-	return &(*l.Origin)[0], true
-}
-
-func (l *linkRequest) createLink(url string, short string) error {
+func (l *linkRequest) createLink(url string) error {
 	link := &[]LinkItem{{
-		Target: url,
-		Short:  short,
+		db.Link{
+			Target: url,
+		},
 	}}
 
 	l.Origin = link
 
-	return l.Db.Save(l.Origin).Error
+	return l.Db.Save(&l.Origin).Error
 }
 
 type LinkItem struct {
-	*gorm.Model
-	Target string
-	Short  string `gorm:"uniqueIndex"`
+	db.Link
+}
+
+func (l *LinkItem) TableName() string {
+	return "links"
 }
 
 func (l *LinkItem) GetId() uint {
@@ -73,5 +66,5 @@ func (l *LinkItem) GetTarget() string {
 }
 
 func (l *LinkItem) GetShortUrl() string {
-	return l.Short
+	return codeFromId(l.ID)
 }

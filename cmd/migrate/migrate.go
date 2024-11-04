@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	featureLink "url-shorts.com/internal/features/Link"
-	"url-shorts.com/internal/system"
+	"url-shorts.com/internal/db"
 )
 
 func main() {
-	db := system.GetDb()
+	dba := db.GetDb()
 
-	fmt.Printf("Migrate `%s` completed with: %v\n", "link", db.AutoMigrate(featureLink.LinkItem{}))
+	fmt.Printf("Migrate `%s` completed with: %v\n", "link", dba.AutoMigrate(db.Link{}))
 	fmt.Println("Migration completed")
 }

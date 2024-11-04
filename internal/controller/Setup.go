@@ -24,8 +24,9 @@ func Setup(app *fiber.App) {
 
 	liveReload(app)
 
-	app.Get("/", handle(templates.Layout, Main))
 	app.Post("/create", handle(templates.Layout, Create))
+	app.Get("/:code", Redirect)
+	app.Get("/", handle(templates.Layout, Main))
 }
 
 func handle(
