@@ -10,10 +10,19 @@ templ Layout(data system.Response) {
             <meta name="keywords" content={data.GetKeyword()} />
             <meta name="description" content={data.GetDescription()} />
             <script src="/public/js/library/htmx.js"></script>
+            <script src="/public/js/library/htmx-preload-and-store.js"></script>
             <script src="/public/js/library/tailwind.js"></script>
             <script src="/public/js/live-reload.js"></script>
+            <link rel="icon" type="image/x-icon" href="/public/images/favicon.ico">
         </head>
-        <body class="bg-stone-800 text-neutral-100 p-4">
+        <body
+            id="body-el"
+            class="bg-stone-800 text-neutral-100 p-4"
+            hx-ext="preload-and-store"
+            hx-preload-cache-lifetime="1"
+            hx-preload-action="init"
+            hx-preload-target="#body-el"
+        >
             @data.GetContent()
         </body>
     </html>

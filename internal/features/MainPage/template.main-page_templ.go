@@ -8,9 +8,10 @@ package featureMainPage
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "url-shorts.com/internal/features/CreateLink"
+import "url-shorts.com/internal/features/Link"
+import "url-shorts.com/internal/features/User"
 
-func templatePage() templ.Component {
+func templatePage(user featureUser.User) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -35,11 +36,17 @@ func templatePage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = featureCreateLink.LinkCreateShortBlock().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = featureLink.LinkCreateShortBlock().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"bg-stone-400 py-4 px-20 mx-auto mb-2 w-[800px] rounded shadow-lg shadow-white/20\"><h2 class=\"pt-2 pb-4 text-2xl text-center\">Want More? Try Premium Features!</h2><p class=\"text-center\">Custom short links, powerful dashboard, detailed analytics, API, UTM builder, QR codes, browser extension, app integrations and support</p><div class=\"text-center\"><button class=\"mt-4 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded\">Create account</button></div></section><section class=\"p-4 mx-auto w-[800px]\"><h2 class=\"pt-2 pb-4 text-2xl\">Simple and fast URL shortener!</h2><p>ShortURL allows to shorten long links from Instagram, Facebook, YouTube, Twitter, Linked In, WhatsApp, TikTok, blogs and sites. Just paste the long URL and click the Shorten URL button. On the next page, copy the shortened URL and share it on sites, chat and emails. After shortening the URL, check how many clicks it received.</p></section><section class=\"p-4 mx-auto w-[800px]\"><h2 class=\"pt-2 pb-4 text-2xl\">Shorten, share and track</h2><p>Your shortened URLs can be used in publications, documents, advertisements, blogs, forums, instant messages, and other locations. Track statistics for your business and projects by monitoring the number of hits from your URL with our click counter.</p></section></div>")
+		if user == nil {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"bg-stone-400 py-4 px-20 mx-auto mb-2 w-[800px] rounded shadow-lg shadow-white/20\"><h2 class=\"pt-2 pb-4 text-2xl text-center\">Want More? Try Premium Features!</h2><p class=\"text-center\">Custom short links, powerful dashboard, detailed analytics, API, UTM builder, QR codes, browser extension, app integrations and support</p><div class=\"text-center\"><button type=\"button\" hx-get=\"/sign-up\" hx-push-url=\"true\" class=\"mt-4 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded\">Create account</button> or&nbsp;<a href=\"/sign-in\" hx-get=\"/sign-in\" hx-push-url=\"true\">Sign In</a></div></section>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"p-4 mx-auto w-[800px]\"><h2 class=\"pt-2 pb-4 text-2xl\">Simple and fast URL shortener!</h2><p>ShortURL allows to shorten long links from Instagram, Facebook, YouTube, Twitter, Linked In, WhatsApp, TikTok, blogs and sites. Just paste the long URL and click the Shorten URL button. On the next page, copy the shortened URL and share it on sites, chat and emails. After shortening the URL, check how many clicks it received.</p></section><section class=\"p-4 mx-auto w-[800px]\"><h2 class=\"pt-2 pb-4 text-2xl\">Shorten, share and track</h2><p>Your shortened URLs can be used in publications, documents, advertisements, blogs, forums, instant messages, and other locations. Track statistics for your business and projects by monitoring the number of hits from your URL with our click counter.</p></section></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

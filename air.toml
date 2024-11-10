@@ -5,7 +5,7 @@ tmp_dir = "tmp"
   pre_cmd = ["TEMPL_EXPERIMENT=rawgo templ generate"]
   cmd = "go build -o tmp/main cmd/http/http.go"
   bin = "tmp/main"
-  full_bin = "DOMAIN=http://localhost:3031/ ./tmp/main"
+  full_bin = "DOMAIN=http://127.0.0.1:3010/ DB_USER=postgres_wot DB_PASS=1234 DB_NAME=url-shorts ./tmp/main"
   delay = 1000 # ms
   exclude_dir = ["public", "tmp", "vendor"]
   include_ext = ["go", "templ"]

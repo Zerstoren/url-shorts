@@ -70,7 +70,7 @@ func Layout(data system.Response) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><script src=\"/public/js/library/htmx.js\"></script><script src=\"/public/js/library/tailwind.js\"></script><script src=\"/public/js/live-reload.js\"></script></head><body class=\"bg-stone-800 text-neutral-100 p-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><script src=\"/public/js/library/htmx.js\"></script><script src=\"/public/js/library/htmx-preload-and-store.js\"></script><script src=\"/public/js/library/tailwind.js\"></script><script src=\"/public/js/live-reload.js\"></script><link rel=\"icon\" type=\"image/x-icon\" href=\"/public/image/favicon.ico\"></head><body id=\"body-el\" class=\"bg-stone-800 text-neutral-100 p-4\" hx-ext=\"preload-and-store\" hx-preload-cache-lifetime=\"1\" hx-preload-action=\"init\" hx-preload-target=\"#body-el\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

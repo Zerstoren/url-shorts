@@ -42,7 +42,7 @@ func (config *runConfig) run() {
 func GetDb() *gorm.DB {
 	if db.db == nil {
 		db = runConfig{
-			dbHost:     "localhost",
+			dbHost:     "127.0.0.1",
 			dbPort:     "5432",
 			dbUser:     os.Getenv("DB_USER"),
 			dbPassword: os.Getenv("DB_PASS"),
@@ -73,6 +73,12 @@ func (i *IterableOrigin[T]) GetFirst() (*T, bool) {
 	}
 
 	return &(*i.Origin)[0], true
+}
+
+type RequestMethods interface {
+	ResetDb()
+	GetDb() *gorm.DB
+	SetDb(*gorm.DB)
 }
 
 type Request struct {

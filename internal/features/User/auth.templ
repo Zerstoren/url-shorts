@@ -1,0 +1,96 @@
+package featureUser
+
+templ loginForm(defaultLogin string, textError string) {
+    <div id="login-page">
+        <h1 class="mt-8 mb-4 text-4xl text-center">URLs SHORTs</h1>
+
+        <section class="bg-stone-400 py-4 px-20 mx-auto mb-2 w-[800px] rounded shadow-lg shadow-white/20">
+            <h2 class="pt-2 pb-4 text-2xl text-center">Sign In</h2>
+
+            <form
+                hx-post="/sign-in"
+                hx-swap="outerHTML"
+                hx-target="#login-page"
+            >
+                <div class="mb-2">
+                    <input 
+                        type="text" 
+                        name="email"
+                        placeholder="Email"
+                        value={defaultLogin}
+                        class="w-[100%] h-14 px-4 py-6 border-zinc-600 text-stone-800 border-0.5 rounded"
+                    />
+                    if textError != "" {
+                        <p class="text-red-700">{textError}</p>
+                    }
+                </div>
+
+                <div class="mb-2">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Password"
+                        class="w-[100%] h-14 px-4 py-6 border-zinc-600 text-stone-800 border-0.5 rounded"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-40 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded-r"
+                >Sign In</button>
+            </form>
+        </section>
+    </div>
+}
+
+templ registerForm(errorText string) {
+    <div id="register-page">
+        <h1 class="mt-8 mb-4 text-4xl text-center">URLs SHORTs</h1>
+
+        <section class="bg-stone-400 py-4 px-20 mx-auto mb-2 w-[800px] rounded shadow-lg shadow-white/20">
+            <h2 class="pt-2 pb-4 text-2xl text-center">Sign Up</h2>
+
+            <form
+                hx-post="/sign-up"
+                hx-swap="outerHTML"
+                hx-target="#register-page"
+            >
+                <div class="mb-2">
+                    <input 
+                        type="text" 
+                        name="email"
+                        placeholder="Email"
+                        class="w-[100%] h-14 px-4 py-6 border-zinc-600 text-stone-800 border-0.5 rounded"
+                    />
+                </div>
+
+                <div class="mb-2">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Password"
+                        class="w-[100%] h-14 px-4 py-6 border-zinc-600 text-stone-800 border-0.5 rounded"
+                    />
+                </div>
+
+                <div class="mb-2">
+                    <input 
+                        type="password" 
+                        name="re-password" 
+                        placeholder="Repeat password"
+                        class="w-[100%] h-14 px-4 py-6 border-zinc-600 text-stone-800 border-0.5 rounded"
+                    />
+                </div>
+
+                if errorText != "" {
+                    <p class="text-red-700">{errorText}</p>
+                }
+
+                <button
+                    type="submit"
+                    class="w-40 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded-r"
+                >Sign Up</button>
+            </form>
+        </section>
+    </div>
+}

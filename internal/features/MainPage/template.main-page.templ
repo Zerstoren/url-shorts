@@ -1,13 +1,15 @@
 package featureMainPage
 
-import "url-shorts.com/internal/features/CreateLink"
+import "url-shorts.com/internal/features/Link"
+import "url-shorts.com/internal/features/User"
 
-templ templatePage() {
+templ templatePage(user featureUser.User) {
     <div>
         <h1 class="mt-8 mb-4 text-4xl text-center">URLs SHORTs</h1>
 
-        @featureCreateLink.LinkCreateShortBlock()
+        @featureLink.LinkCreateShortBlock()
 
+        if user == nil {
         <section class="bg-stone-400 py-4 px-20 mx-auto mb-2 w-[800px] rounded shadow-lg shadow-white/20">
             <h2 class="pt-2 pb-4 text-2xl text-center">Want More? Try Premium Features!</h2>
             <p class="text-center">
@@ -15,9 +17,13 @@ templ templatePage() {
             </p>
 
             <div class="text-center">
-                <button class="mt-4 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded">Create account</button>
+                <button type="button" hx-get="/sign-up" hx-push-url="true" class="mt-4 bg-cyan-600 h-14 px-4 border-zinc-600 border-0.5 rounded">Create account</button>
+                or&nbsp;
+                // <a href="/sign-in" hx-get="/sign-in" hx-push-url="true" preload="mouseover">Sign In</a>
+                <a href="/sign-in" hx-get="/sign-in" hx-push-url="true">Sign In</a>
             </div>
         </section>
+        }
 
         <section class="p-4 mx-auto w-[800px]">
             <h2 class="pt-2 pb-4 text-2xl">Simple and fast URL shortener!</h2>

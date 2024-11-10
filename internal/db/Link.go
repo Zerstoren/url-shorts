@@ -1,8 +1,6 @@
 package db
 
-import "gorm.io/gorm"
-
 type Link struct {
-	*gorm.Model
+	ID     uint `gorm:"primarykey"`
 	Target string
 }

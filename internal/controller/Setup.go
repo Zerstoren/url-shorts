@@ -1,32 +1,64 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
 	"github.com/a-h/templ"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/session"
+	"os"
 	"time"
+	featureUser "url-shorts.com/internal/features/User"
 	"url-shorts.com/internal/system"
-	"url-shorts.com/internal/templates"
 )
 
 import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/storage/postgres/v3"
 
 var store *session.Store
 
 func Setup(app *fiber.App) {
+	storePg := postgres.New(postgres.Config{
+		Host:       "127.0.0.1",
+		Port:       5432,
+		Username:   os.Getenv("DB_USER"),
+		Password:   os.Getenv("DB_PASS"),
+		Database:   os.Getenv("DB_NAME"),
+		Table:      "fiber_session",
+		GCInterval: 10,
+	})
+
 	store = session.New(session.Config{
 		CookieHTTPOnly: true,
+		Storage:        storePg,
 		// CookieSecure: true, for https
 		Expiration: time.Hour * 1,
 	})
 
+	app.Use(middlewareAuthUser)
+
 	liveReload(app)
 
-	app.Post("/create", handle(templates.Layout, Create))
-	app.Get("/:code", Redirect)
-	app.Get("/", handle(templates.Layout, Main))
+	setupAuth(app)
+	setupMain(app)
+}
+
+func middlewareAuthUser(ctx *fiber.Ctx) error {
+	sess, err := store.Get(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).SendString(err.Error())
+	}
+	userId := sess.Get("user")
+
+	if userId == nil {
+		ctx.Locals("user", nil)
+	} else {
+		ctx.Locals("user", featureUser.GetUserById(userId.(uint)))
+	}
+
+	return ctx.Next()
 }
 
 func handle(
@@ -46,7 +78,38 @@ func handle(
 			return err.Error()
 		}
 
-		layoutContent := layout(content)
+		if content.GetRedirect() != nil {
+			ctx.Status(301).Redirect(*content.GetRedirect())
+			return nil
+		}
+
+		headers := ctx.GetReqHeaders()
+
+		_, ok := headers["Hx-Request"]
+
+		var layoutContent templ.Component
+
+		if content == nil {
+			log.Error("No content for page")
+			_ = ctx.
+				Status(fiber.StatusInternalServerError)
+			return errors.New("no content for page")
+		}
+
+		if ok {
+			layoutContent = content.GetContent()
+			ctx.Set("HX-Retarget", "#body-el")
+
+			if content.GetCacheTime() != nil {
+				ctx.Set(
+					"Cache-Control",
+					fmt.Sprintf("private, max-age=%d", int(content.GetCacheTime().Seconds())),
+				)
+			}
+		} else {
+			layoutContent = layout(content)
+		}
+
 		return adaptor.HTTPHandler(templ.Handler(layoutContent))(ctx)
 	}
 }
